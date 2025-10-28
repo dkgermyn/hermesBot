@@ -7,7 +7,7 @@
 Overseerr has built-in Discord notification support, but it can only @mention users if their Discord ID is stored in Overseerr's database. Hermes provides a secure, user-friendly way for people to link their own accounts without requiring administrator intervention.
 
 **Key Benefits:**
-- Users can self-service their Discord linking
+- Users can do their own Discord<->Overseer linking
 - No database access required (only Overseerr API)
 - No Plex credentials needed
 - Secure proof-of-control verification
@@ -36,15 +36,8 @@ Overseerr has built-in Discord notification support, but it can only @mention us
 
 Hermes follows a minimal-privilege security model:
 
-✅ **What Hermes needs:**
 - Overseerr API key (read user list, write notification settings)
 - Discord bot token
-
-❌ **What Hermes does NOT need:**
-- Plex credentials or API access
-- Database access (uses Overseerr's API)
-- Docker socket or host filesystem access
-- Command execution capabilities
 
 **Proof of Control:**
 Users prove they control an Overseerr account by temporarily modifying their Display Name to include a verification code. Only someone logged into that Overseerr account can make that change, preventing impersonation.
@@ -60,6 +53,7 @@ Before running Hermes, you need:
 2. **Discord bot token**
    - Create a bot at [Discord Developer Portal](https://discord.com/developers/applications)
    - Enable "Message Content Intent" under Privileged Gateway Intents
+   - Fetch the bot's token (you'll need it later)
    - Invite bot to your server with basic permissions (Send Messages, Read Messages, View Channels)
 
 3. **Overseerr Discord notifications configured**
@@ -69,7 +63,7 @@ Before running Hermes, you need:
 
 ## Installation
 
-### Option 1: Run with Python
+### Option 1: Python
 
 ```bash
 # Clone the repository
@@ -87,7 +81,7 @@ pip install -r requirements.txt
 python bot.py
 ```
 
-### Option 2: Run with Docker
+### Option 2: Docker
 
 ```bash
 # Clone the repository
@@ -132,7 +126,7 @@ Edit `.env` with your credentials:
 ```bash
 # Overseerr Configuration
 OVERSEERR_API_KEY=your_overseerr_api_key_here
-OVERSEERR_BASE_URL=http://localhost:5055/api/v1
+OVERSEERR_BASE_URL=http://localhost:5055/api/v1 
 
 # Discord Bot Configuration
 BOT_TOKEN=your_discord_bot_token_here
@@ -302,34 +296,6 @@ When you run `!done` to complete linking, Hermes automatically enables Overseerr
 ### Q: Why does the bot only work in DMs?
 
 **A:** For privacy. This prevents usernames and verification codes from being exposed in public channels.
-
-## Development
-
-### Project Structure
-
-```
-hermesBot/
-├── bot.py              # Main bot logic and Discord commands
-├── config.py           # Environment variable loading and validation
-├── overseerr_api.py    # Overseerr API wrapper functions
-├── requirements.txt    # Python dependencies
-├── Dockerfile          # Container image definition
-├── .env.example        # Template for environment variables
-├── .gitignore          # Git ignore rules
-├── LICENSE             # MIT License
-└── README.md           # This file
-```
-
-### Running Tests
-
-Currently, Hermes doesn't have automated tests. Manual testing workflow:
-
-1. Set up test Overseerr instance
-2. Create test Discord bot
-3. Configure `.env` with test credentials
-4. Run `python bot.py`
-5. Test each command (`!link`, `!done`, `!status`, `!unlink`)
-6. Verify Overseerr notifications include @mentions
 
 ### Contributing
 
